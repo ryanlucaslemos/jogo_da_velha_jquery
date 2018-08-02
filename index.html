@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html lang="pt-br">
+	<head>
+		<meta charset="UTF-8">
+		<!-- icones da guia no navegador -->
+		<link rel="apple-touch-icon" sizes="57x57" href="imagens/favicon/apple-icon-57x57.png">
+		<link rel="apple-touch-icon" sizes="60x60" href="imagens/favicon/apple-icon-60x60.png">
+		<link rel="apple-touch-icon" sizes="72x72" href="imagens/favicon/apple-icon-72x72.png">
+		<link rel="apple-touch-icon" sizes="76x76" href="imagens/favicon/apple-icon-76x76.png">
+		<link rel="apple-touch-icon" sizes="114x114" href="imagens/favicon/apple-icon-114x114.png">
+		<link rel="apple-touch-icon" sizes="120x120" href="imagens/favicon/apple-icon-120x120.png">
+		<link rel="apple-touch-icon" sizes="144x144" href="imagens/favicon/apple-icon-144x144.png">
+		<link rel="apple-touch-icon" sizes="152x152" href="imagens/favicon/apple-icon-152x152.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="imagens/favicon/apple-icon-180x180.png">
+		<link rel="icon" type="image/png" sizes="192x192"  href="imagens/favicon/android-icon-192x192.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="imagens/favicon/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="96x96" href="imagens/favicon/favicon-96x96.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="imagens/favicon/favicon-16x16.png">
+		<link rel="manifest" href="imagens/favicon/manifest.json">
+		<meta name="msapplication-TileColor" content="#ffffff">
+		<meta name="msapplication-TileImage" content="imagens/favicon/ms-icon-144x144.png">
+		<meta name="theme-color" content="#ffffff">
+		<!-- fim icones -->
+		<title>Jogo da velha</title>
+		<script src="jquery-2.2.1.js"></script>
+		<script src="jogo.js"></script>
+	</head>
+
+	<body>
+		<div id="pagina_inicial" align="center">
+			<table  width="600px;">
+				<tbody>
+				<tr>
+					<td colspan="3" align="center">JOGO DA VELHA</td>
+				</tr>
+				<tr>
+					<td align="center"> 
+						<img src="imagens/jogador_1.png">
+						<br>
+						<input id="entrada_apelido_jogador_1" type="text" placeholder="Apelido do jogador 1" style="border: 0px; text-align: center;" maxlength="10">
+					</td>
+					<td align="center">
+						<img id="btn_iniciar_jogo" src="imagens/iniciar.png">
+					</td>
+					<td align="center">
+						<img src="imagens/jogador_2.png">
+						<br>
+						<input id="entrada_apelido_jogador_2" type="text" placeholder="Apelido do jogador 2" style="border: 0px; text-align: center;"  maxlength="10">
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<div id="palco_jogo" style="display: none; margin-top: 50px; text-align: center;">
+			<div style="display: inline-block;">
+				<img src="imagens/jogador_1.png" id="imagem_jogador1">
+				<br>
+				<h4 id="nome_jogador1"></h4>
+				<h5>Vitórias = <b id="vitorias_j1">0</b></h5>
+			</div>
+			<div style="display: inline-block;">
+				<table id="tabuleiro" border="0">
+					<tr>
+						<td style="border-bottom: solid 1px red; border-right: solid 1px red">
+							<div class="jogada" id="a-1" style="width: 100px; height: 100px;"></div>
+						</td>
+						<td style="border-bottom: solid 1px red; border-right: solid 1px red">
+							<div class="jogada" id="a-2" style="width: 100px; height: 100px;"></div>
+						</td>
+						<td style="border-bottom: solid 1px red;">
+							<div class="jogada" id="a-3" style="width: 100px; height: 100px;"></div>
+						</td>
+					</tr>
+					<tr>
+						<td style="border-bottom: solid 1px red; border-right: solid 1px red">
+							<div class="jogada" id="b-1" style="width: 100px; height: 100px;"></div>
+						</td>
+						<td style="border-bottom: solid 1px red; border-right: solid 1px red">
+							<div class="jogada" id="b-2" style="width: 100px; height: 100px;"></div>
+						</td>
+						<td style="border-bottom: solid 1px red;">
+							<div class="jogada" id="b-3" style="width: 100px; height: 100px;"></div>
+						</td>
+					</tr>
+					<tr>
+						<td style="border-right: solid 1px red">
+							<div class="jogada" id="c-1" style="width: 100px; height: 100px;"></div>
+						</td>
+						<td style="border-right: solid 1px red">
+							<div class="jogada" id="c-2" style="width: 100px; height: 100px;"></div>
+						</td>
+						<td>
+							<div class="jogada" id="c-3" style="width: 100px; height: 100px;"></div>
+						</td>
+					</tr>
+				</table>
+
+				
+			</div>
+			<div style="display: inline-block;">
+				<img src="imagens/jogador_2.png" id="imagem_jogador2">
+				<br>
+				<h4 id="nome_jogador2"></h4>
+				<h5>Vitórias = <b id="vitorias_j2">0</b></h5>
+			</div>
+			<center>
+				<br>
+				<br>
+				<hr>
+				<div id="indicacao_vez">
+					<div style="display: inline-block;">
+							<h3 id="vez_texto"></h3>
+
+					</div>
+				
+					<div style=" height:100px; width: 100px;">
+						<img src="" id="marcacao_jogador_atual">
+					</div>
+				</div>
+				<div id="fim_jogo" style="display: none;">
+					<table  width="600px;">
+						<tbody>
+						<tr>
+							<td colspan="3" align="center"><h3><b>Fim de jogo</b></h3></td>
+						</tr>
+						<tr></tr>
+						<tr>
+							<td align="center"> 
+								<h4><b>Iniciar novo jogo com novos jogadores</b></h4>
+								<img src="imagens/iniciar.png" id="inicia_novo_jogo">
+								
+								
+							</td>
+							<td align="center" style="height: 50px; border-left: 1px solid;"></td>
+							<td align="center">
+								<h4><b>Jogar novamente com mesmos jogadores</b></h4>
+								<img src="imagens/recarrega.png" id="recarrega_jogo">
+								
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</center>
+		</div>
+
+	</body>
+</html>
