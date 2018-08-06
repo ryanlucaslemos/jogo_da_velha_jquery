@@ -1,9 +1,10 @@
 
 var rodada = 1, vitorias_jogador_1 = 0, vitorias_jogador_2 = 0;
-var matriz_jogo = inicia_matriz_jogo();
+var matriz_jogo;
+
 //matriz para iniciar a matriz jogo, setando seus valores como 0
 function inicia_matriz_jogo(){
-	var matriz_jogo = Array(3);
+	matriz_jogo = Array();
 	for (var i =  1; i <= 3; i++) {
 		var pos_auxiliar = '';
 		if (i == 1) {
@@ -15,31 +16,23 @@ function inicia_matriz_jogo(){
 		else{
 			pos_auxiliar = 'c';
 		}
-		matriz_jogo[pos_auxiliar] = Array(3);
+		matriz_jogo[pos_auxiliar] = Array();
 		for(var j = 1; j<=3; j++){
 			matriz_jogo[pos_auxiliar][j] = 0;
 		}
 
 	}
-	return matriz_jogo;
+	
 }
+
+
 //executa quando o dom estiver carregado
 $(document).ready( function(){
+
 	var jogador_1, jogador_2, vencedor;
-	//mostra o texto e a marcação de cada jogador
-	function indicacao_vez(jogador){
-		var vez_texto = 'Sua vez de jogar ', img_src = '';
-		if(jogador == 1){
-			vez_texto += nome_jogador1 + '. Você joga com:';
-			img_src = 'imagens/marcacao_1.png';
-		}
-		else{
-			vez_texto += nome_jogador2 + '. Você joga com:';
-			img_src = 'imagens/marcacao_2.png';
-		}
-		$('#vez_texto').html(vez_texto);
-		$('#marcacao_jogador_atual').prop('src', img_src);
-	}
+	inicia_matriz_jogo();
+	//verificando a matriz de jogo
+	//console.log(matriz_jogo);
 	//quando clicar para iniciar o jogo 
 	$('#btn_iniciar_jogo').click( function(){
 		//valida a digitação dos apelidos dos jogadores
@@ -66,19 +59,39 @@ $(document).ready( function(){
 		var id_campo_clicado = this.id;
 		$('#'+id_campo_clicado).prop('class', 'changed');
 		jogada(id_campo_clicado);
+		//caso a rodada seja maior que 4, indica que ja tem possibilidade de ter uma combinação vencedora
+		if(rodada>4){
+			//verifica as combinações
+			var matriz_pontos = monta_possibilidades();
+			//verifica se ganhou
+			var ganhou = ganhador(matriz_pontos);
+			if(ganhou){
+				//se ganhou chama a função que encerra o jogo e mostra a possibilidade de iniciar 
+				//um novo jogo com os mesmos jogadores ou com jogadores diferentes
+				fim_jogo();
+			}
+			//caso chegue na rodada em que a velha ja é possivel e não tenha ganhadores
+			else if(rodada>6){
+				velha(matriz_pontos);
+			}
+		}
+		rodada++;
 	});
+
 	function jogada(id){
 		var icone = '';
 		var ponto = 0;
 		var indicacao = 0;
 		if ((rodada%2) == 1) {
+			//menos um pro x
 			ponto = -1;
 			icone = 'url("imagens/marcacao_1.png")';
 			//modaifica o jogador que vai ser indicado (1 ou 2)
 			indicacao = 2;
 			
 
-		}	else{
+		} else {
+			//mais um pro o
 			ponto = 1;
 			icone = 'url("imagens/marcacao_2.png")';
 			//modaifica o jogador que vai ser indicado (1 ou 2)
@@ -91,20 +104,29 @@ $(document).ready( function(){
 		indicacao_vez(indicacao);
 		var linha_coluna = id.split('-');
 		matriz_jogo[linha_coluna[0]][linha_coluna[1]] = ponto;
-		//caso a rodada seja maior que 4, indica que ja tem possibilidade de ter uma combinação vencedora
-		if(rodada>4){
-			//verifica as combinações
-			verifica_combinacao();
-		}
-		rodada++;
 	}
-	function verifica_combinacao(){
-		//verifica na horizontal
+	//mostra o texto e a marcação de cada jogador
+	function indicacao_vez(jogador){
+		var vez_texto = 'Sua vez de jogar ', img_src = '';
+		if(jogador == 1){
+			vez_texto += nome_jogador1 + '. Você joga com:';
+			img_src = 'imagens/marcacao_1.png';
+		}
+		else{
+			vez_texto += nome_jogador2 + '. Você joga com:';
+			img_src = 'imagens/marcacao_2.png';
+		}
+		$('#vez_texto').html(vez_texto);
+		$('#marcacao_jogador_atual').prop('src', img_src);
+	}
+
+	function monta_possibilidades(){
+		
 		var matriz_pontos = Array(3);
 		matriz_pontos[0] = 0;
 		matriz_pontos[1] = 0;
 		matriz_pontos[2] = 0;
-		//verifica na horizontal
+		//possibilidades na horizontal
 		for(var i=1; i<=3; i++){
 			//referente a linha A
 			matriz_pontos[0] += matriz_jogo['a'][i];
@@ -113,7 +135,7 @@ $(document).ready( function(){
 			//referente a linha C
 			matriz_pontos[2] += matriz_jogo['c'][i];
 		}
-		//verifica na vertical
+		//possibilidades na vertical
 		var pontos = 0;
 		for(var l = 1; l<=3; l++){
 			pontos = 0;
@@ -124,7 +146,7 @@ $(document).ready( function(){
 			matriz_pontos.push(pontos);
 			
 		}
-		//verificar na diagonal
+		//possibilidades na diagonal
 		pontos_diagonal1 = 0;
 		pontos_diagonal1 = matriz_jogo['a'][1] + matriz_jogo['b'][2] + matriz_jogo['c'][3];
 
@@ -134,17 +156,8 @@ $(document).ready( function(){
 		matriz_pontos.push(pontos_diagonal1);
 		matriz_pontos.push(pontos_diagonal2);
 		//console.log(matriz_pontos);
-		//verifica se ganhou
-		var ganhou = ganhador(matriz_pontos);
-		if(ganhou){
-			//se ganhou chama a função que encerra o jogo e mostra a possibilidade de iniciar 
-			//um novo jogo com os mesmos jogadores ou com jogadores diferentes
-			fim_jogo();
-		}
-		//caso chegue na rodada em que a velha ja é possivel e não tenha ganhadores
-		else if(rodada>6){
-			velha(matriz_pontos);
-		}
+		//retorna a matriz de possibilidades 
+		return matriz_pontos;
 		
 	}
 	function ganhador(pontos){
@@ -162,6 +175,7 @@ $(document).ready( function(){
 		}
 		return false
 	}
+
 	function velha(pontos){
 		//conta quantos tem 0 e -1
 		var verificador_velha = 0;
@@ -177,10 +191,10 @@ $(document).ready( function(){
 		}
 		if(verificador_velha == pontos.length){
 			alert('IIIIIIH RAPAIZ ninguém venceu, deu velha em ?!');
-			$('.jogada').prop('onclick', null);
 			fim_jogo();
 		}
 	}
+
 	function reinicia_matriz_jogo(){
 		for (var i =  1; i <= 3; i++) {
 			var pos_auxiliar = '';
